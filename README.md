@@ -11,8 +11,8 @@
 </p>
 
 <p align="center">
-  <b>A clean, ad-free desktop app for downloading video and audio.</b><br>
-  <b>Available for both Windows and Linux.</b>
+  <b>A clean, ad-free desktop/android app for downloading video and audio.</b><br>
+  <b>Currently available for Windows, Linux and Android.</b>
 </p>
 
 ---
