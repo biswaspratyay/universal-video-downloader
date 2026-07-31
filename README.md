@@ -6,66 +6,84 @@
 
 <p align="center">
   <a href="https://github.com/biswaspratyay/Universal_Video_Downloader/releases/latest">
-    <img src="https://img.shields.io/badge/⬇_Latest_Release-Download-success?style=for-the-badge&logo=github">
-  </a>
-</p>
+    <img src="https://img.shields.io/badge/Latest_Release-Download-success?style=for-the-badge&logo=github">
+ 
 
 <p align="center">
-  <b>A clean, ad-free desktop/android app for downloading video and audio.</b><br>
-  <b>Currently available for Windows, Linux and Android.</b>
+  <b>A clean, ad-free video and audio downloader powered by yt-dlp.</b><br>
+  <b>Available for Windows, Linux and Android.</b>
 </p>
 
 ---
 
-I built Universal Video Downloader because I wanted a straightforward GUI for `yt-dlp` and `FFmpeg` that didn't look like a relic from 2005. Written in Python and PySide6, it handles the heavy lifting of pulling media from most platforms while giving you format choices, resume support, and reliable progress tracking.
-
+Universal Video Downloader is a modern cross-platform frontend for **yt-dlp** and **FFmpeg**, designed to make downloading media simple without sacrificing flexibility. Whether you're on desktop or Android, it provides a clean interface for analyzing videos, choosing formats, and managing downloads.
 
 ## Features
 
-* **Multi-Platform Support:** Downloads video and audio from anywhere `yt-dlp` supports.
-* **Format Analyzer:** See the exact codec, bitrate, and estimated file size before you download.
-* **Live Previews:** Fetches thumbnails and detailed video metadata instantly.
-* **Download Management:** Real-time speed and ETA tracking, with the ability to pause, resume, or cancel (automatically cleans up partial files).
-* **Standalone:** Comes bundled with FFmpeg, so it works right out of the box.
-* **Cross-Platform Architecture:** Windows builds are currently available, with Linux and macOS support planned.
-* **Playlist Download Manager:** Copy and analyze the link of any YouTube playlist to see the playlist details and either download the entire playlist or download your selected ones. The choice is completely yours.
-
+* **Cross-Platform:** Native applications for Windows, Linux, and Android.
+* **Wide Site Support:** Download video and audio from hundreds of websites supported by `yt-dlp`.
+* **Format Analyzer:** Preview available formats, codecs, bitrate, resolution, and estimated file sizes before downloading.
+* **Video Preview:** Instantly fetch thumbnails and detailed metadata.
+* **Download Manager:** Real-time progress, speed, ETA, pause, resume, cancel, and automatic cleanup of partial downloads.
+* **Playlist Support:** Analyze YouTube playlists and download either the entire playlist or selected videos.
+* **Bundled FFmpeg:** Desktop releases include FFmpeg, so no additional setup is required.
 
 ## Tech Stack
 
-* Python
-* PySide6 (Qt for Python)
-* yt-dlp
-* FFmpeg
-* PyInstaller
-
+| Component | 🖥️ Desktop | 📱 Android |
+|-----------|------------|------------|
+| **Language** | [Python](https://www.python.org/) | [Kotlin](https://kotlinlang.org/) |
+| **UI Framework** | [PySide6 (Qt for Python)](https://doc.qt.io/qtforpython/) | [Jetpack Compose](https://developer.android.com/jetpack/compose) |
+| **Design System** | Qt Widgets | [Material 3](https://m3.material.io/) |
+| **Download Engine** | [yt-dlp](https://github.com/yt-dlp/yt-dlp) | [yt-dlp](https://github.com/yt-dlp/yt-dlp) via [youtubedl-android](https://github.com/junkfood02/youtubedl-android) |
+| **Media Processing** | [FFmpeg](https://ffmpeg.org/) | Built into the download engine |
+| **Networking** | [Requests](https://requests.readthedocs.io/) | Native Android networking |
+| **Image Loading / Processing** | [Pillow](https://python-pillow.org/) | [Coil](https://coil-kt.github.io/coil/) |
+| **Local Storage** | File System | [Jetpack DataStore](https://developer.android.com/topic/libraries/architecture/datastore) |
+| **Architecture** | Modular Python Application | MVVM, Kotlin Coroutines & Flow |
+| **Packaging** | [PyInstaller](https://pyinstaller.org/) | APK / Android App Bundle (AAB) |
 
 ## Installation
 
-1. Grab the latest `UniversalVideoDownloader-v<version>-Windows-x64.zip` from the [Releases page](https://github.com/biswaspratyay/Universal_Video_Downloader/releases/latest).
-2. Extract the folder anywhere on your PC.
-3. Run `UniversalVideoDownloader.exe`.
+### Windows
 
-> **Note:** Because the application isn't signed with a paid developer certificate yet, Windows SmartScreen will likely flag it. Click **More info** → **Run anyway** to bypass this.
+1. Download the latest **Windows** release from the [Releases](https://github.com/biswaspratyay/Universal_Video_Downloader/releases/latest) page.
+2. Extract the archive.
+3. Launch `UniversalVideoDownloader.exe`.
 
+> **Note:** Since the application isn't code-signed yet, Windows SmartScreen may display a warning. Click **More info** → **Run anyway**.
+
+### Linux
+
+Download the latest Linux release from the Releases page and follow the instructions included with the release package.
+
+### Android
+
+Download the latest APK from the Releases page and install it on your device. If prompted, allow installation from unknown sources.
 
 ## Download
 
-### Just want to use the app?
-Download the latest **`UniversalVideoDownloader-v<version>-Windows-x64.zip`** release asset.
+| Platform | Package |
+|----------|---------|
+| **Windows** | `UniversalVideoDownloader-v<version>-Windows-x64.zip` |
+| **Linux** | Linux release package |
+| **Android** | `UniversalVideoDownloader-v<version>-Android.apk` |
 
 ### Want to build or modify the project?
-Download **Source code (zip)** or **Source code (tar.gz)**
 
-> **Note:** The Source code archives do **not** contain a ready-to-run application.
+Download **Source code (zip)** or **Source code (tar.gz)** from the Releases page.
 
+> **Note:** Source archives contain the project files only—they are not pre-built applications.
 
 ## Usage
 
-Using the app is pretty simple: just paste a supported URL, click **Analyze** to pull the available formats, pick the quality you want, and hit **Download**. You can also drag and drop URLs directly into the window.
+Paste a supported URL, click **Analyze**, choose your preferred format or quality, and press **Download**.
 
+On desktop, you can also drag and drop supported URLs directly into the application window.
 
-## 📸 Screenshots
+## Screenshots
+
+### Desktop
 
 <p align="center">
 <img src="screenshots/screenshots/hero.png" width="90%">
@@ -97,9 +115,14 @@ Using the app is pretty simple: just paste a supported URL, click **Analyze** to
 <i>Track download progress with live speed, ETA, and status updates.</i>
 </p>
 
+### Android
+
+> Screenshots coming soon.
 
 ## License & Contributing
 
-This project is open-source under the **MIT License**.
+Licensed under the **MIT License**.
 
-Bug reports, feature requests, and pull requests are welcome. If you find this tool useful, a ⭐ on the repo is always appreciated!
+Bug reports, feature requests, and pull requests are always welcome.
+
+If you find this project useful, consider giving it a ⭐.
