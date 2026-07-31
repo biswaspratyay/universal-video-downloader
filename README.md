@@ -60,6 +60,7 @@ Download the latest Linux release from the Releases page and follow the instruct
 ### Android
 
 Download the latest APK from the Releases page and install it on your device. If prompted, allow installation from unknown sources.
+>**If you face any error while downloading any file, just click on the "Check for Engine Update" button. This will update the download engine and the download will perform normally.** 
 
 ## Download
 
@@ -116,8 +117,6 @@ On desktop, you can also drag and drop supported URLs directly into the applicat
 </p>
 
 ### Mobile
-
-### Android
 
 <p align="center">
   <img src="screenshots/screenshots/mobile-screenshot-01.jpg.jpeg" width="320" alt="Home Screen">
