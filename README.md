@@ -65,9 +65,9 @@ Download the latest APK from the Releases page and install it on your device. If
 
 | Platform | Package |
 |----------|---------|
-| **Windows** | `UniversalVideoDownloader-v<version>-Windows-x64.zip` |
-| **Linux** | Linux release package |
-| **Android** | `UniversalVideoDownloader-v<version>-Android.apk` |
+| **Windows** | `UniversalVideoDownloader-v1.2-Windows-x64.zip` |
+| **Linux** | `UniversalVideoDownloader-v1.2-Linux-x64.tar.gz` |
+| **Android** | `UniversalVideoDownloader-v1.2-Android-arm64-v8a.zip` |
 
 ### Want to build or modify the project?
 
@@ -115,9 +115,37 @@ On desktop, you can also drag and drop supported URLs directly into the applicat
 <i>Track download progress with live speed, ETA, and status updates.</i>
 </p>
 
+### Mobile
+
 ### Android
 
-> Screenshots coming soon.
+<p align="center">
+  <img src="screenshots/screenshots/mobile-screenshot-01.jpg.jpeg" width="320" alt="Home Screen">
+</p>
+
+<p align="center">
+  <i>Analyze a video and preview available formats.</i>
+</p>
+
+---
+
+<p align="center">
+  <img src="screenshots/screenshots/mobile-screenshot-02.jpg.jpeg" width="320" alt="Format Selection">
+</p>
+
+<p align="center">
+  <i>Select your preferred quality before downloading.</i>
+</p>
+
+---
+
+<p align="center">
+  <img src="screenshots/screenshots/mobile-screenshot-03.jpg.jpeg" width="320" alt="Download Progress">
+</p>
+
+<p align="center">
+  <i>Monitor download progress with real-time speed and ETA.</i>
+</p>
 
 ## License & Contributing
 
