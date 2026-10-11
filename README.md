@@ -18,6 +18,8 @@
 
 Universal Video Downloader is a modern cross-platform frontend for **yt-dlp** and **FFmpeg**, designed to make downloading media simple without sacrificing flexibility. Whether you're on desktop or Android, it provides a clean interface for analyzing videos, choosing formats, and managing downloads.
 
+See the [changelog](CHANGELOG.md) for the v1.3 updates.
+
 ## Features
 
 * **Cross-Platform:** Native applications for Windows, Linux, and Android.
