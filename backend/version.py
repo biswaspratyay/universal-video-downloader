@@ -1,7 +1,7 @@
 """Application and GitHub release metadata."""
 
 APP_NAME = "Universal Video Downloader"
-CURRENT_VERSION = "1.2"
+CURRENT_VERSION = "1.3"
 
 GITHUB_OWNER = "biswaspratyay"
 GITHUB_REPOSITORY = "Universal_Video_Downloader"

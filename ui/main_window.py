@@ -356,10 +356,10 @@ class MainWindow(QMainWindow):
         QMessageBox.about(
             self,
             "About Universal Video Downloader",
-            """
+            f"""
     <h2>Universal Video Downloader</h2>
 
-    <p><b>Version:</b> 1.0</p>
+    <p><b>Version:</b> {CURRENT_VERSION}</p>
 
     <p>
     -> Author: <a href="https://github.com/biswaspratyay">Pratyay Biswas</a>

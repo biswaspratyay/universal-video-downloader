@@ -66,9 +66,9 @@ Download the latest APK from the Releases page and install it on your device. If
 
 | Platform | Package |
 |----------|---------|
-| **Windows** | `UniversalVideoDownloader-v1.2-Windows-x64.zip` |
-| **Linux** | `UniversalVideoDownloader-v1.2-Linux-x64.tar.gz` |
-| **Android** | `UniversalVideoDownloader-v1.2-Android-arm64-v8a.zip` |
+| **Windows** | `UniversalVideoDownloader-v1.3-Windows-x64.zip` |
+| **Linux** | `UniversalVideoDownloader-v1.3-Linux-x64.tar.gz` |
+| **Android** | `UniversalVideoDownloader-v1.3-Android-arm64-v8a.zip` |
 
 ### Want to build or modify the project?
 
