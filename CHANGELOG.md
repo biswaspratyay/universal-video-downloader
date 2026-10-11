@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.3.1
+
+### Fixes
+
+- Restart the app automatically after a theme change in both source and packaged builds.
+
 ## v1.3
 
 ### Highlights

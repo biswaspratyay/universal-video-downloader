@@ -18,7 +18,7 @@
 
 Universal Video Downloader is a modern cross-platform frontend for **yt-dlp** and **FFmpeg**, designed to make downloading media simple without sacrificing flexibility. Whether you're on desktop or Android, it provides a clean interface for analyzing videos, choosing formats, and managing downloads.
 
-See the [changelog](CHANGELOG.md) for the v1.3 updates.
+See the [changelog](CHANGELOG.md) for the v1.3.1 updates.
 
 ## Features
 
@@ -68,9 +68,9 @@ Download the latest APK from the Releases page and install it on your device. If
 
 | Platform | Package |
 |----------|---------|
-| **Windows** | `UniversalVideoDownloader-v1.3-Windows-x64.zip` |
-| **Linux** | `UniversalVideoDownloader-v1.3-Linux-x64.tar.gz` |
-| **Android** | `UniversalVideoDownloader-v1.3-Android-arm64-v8a.zip` |
+| **Windows** | `UniversalVideoDownloader-v1.3.1-Windows-x64.zip` |
+| **Linux** | `UniversalVideoDownloader-v1.3.1-Linux-x64.tar.gz` |
+| **Android** | `UniversalVideoDownloader-v1.3.1-Android-arm64-v8a.zip` |
 
 ### Want to build or modify the project?
 
