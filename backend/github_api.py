@@ -140,9 +140,23 @@ class GitHubReleaseClient:
     @staticmethod
     def _is_repository_asset_url(download_url: str) -> bool:
         parsed = urlparse(download_url)
-        expected_prefix = f"/{GITHUB_OWNER}/{GITHUB_REPOSITORY}/releases/download/"
+        path_parts = parsed.path.split("/")
+        expected_owner = GITHUB_OWNER.casefold()
+        # GitHub canonicalizes repository URLs (for example, it may render an
+        # underscore in a repository name as a hyphen).  Compare the owner and
+        # repository as GitHub does, while still requiring a release-download
+        # URL from this specific repository.
+        expected_repository = GITHUB_REPOSITORY.replace("-", "").replace("_", "").casefold()
+
         return (
             parsed.scheme == "https"
-            and parsed.netloc == "github.com"
-            and parsed.path.startswith(expected_prefix)
+            and parsed.netloc.casefold() == "github.com"
+            and len(path_parts) >= 7
+            and path_parts[0] == ""
+            and path_parts[1].casefold() == expected_owner
+            and path_parts[2].replace("-", "").replace("_", "").casefold()
+            == expected_repository
+            and path_parts[3:5] == ["releases", "download"]
+            and bool(path_parts[5])
+            and bool(path_parts[6])
         )
