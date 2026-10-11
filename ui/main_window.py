@@ -192,28 +192,45 @@ class MainWindow(QMainWindow):
         QTimer.singleShot(150, lambda: self._restart_app())
 
     def _restart_app(self):
+        """Launch a replacement process, then close this instance.
+
+        PyInstaller bundles ``main.py`` inside the executable, so a frozen
+        application must restart the executable itself rather than trying to
+        find and run a source file beside it.
+        """
         current_executable = sys.executable
         if not current_executable:
             return
 
-        project_root = Path(__file__).resolve().parent.parent
-        entry_script = project_root / "main.py"
+        if getattr(sys, "frozen", False):
+            args = sys.argv[1:]
+            working_directory = str(Path(current_executable).resolve().parent)
+        else:
+            project_root = Path(__file__).resolve().parent.parent
+            entry_script = project_root / "main.py"
+            if not entry_script.exists():
+                return
 
-        if not entry_script.exists():
-            return
+            args = [str(entry_script)] + sys.argv[1:]
+            working_directory = str(project_root)
 
-        args = [str(entry_script)] + sys.argv[1:]
-        working_directory = str(project_root)
-
+        started = False
         try:
-            QProcess.startDetached(current_executable, args, working_directory)
+            result = QProcess.startDetached(current_executable, args, working_directory)
+            # PySide bindings have returned both ``bool`` and ``(bool, pid)``.
+            started = result[0] if isinstance(result, tuple) else result
         except Exception:
+            pass
+
+        if not started:
             try:
-                subprocess.Popen([current_executable, str(entry_script)] + sys.argv[1:], cwd=working_directory)
+                subprocess.Popen([current_executable, *args], cwd=working_directory)
+                started = True
             except Exception:
                 pass
 
-        QApplication.quit()
+        if started:
+            QApplication.quit()
 
     def _get_download_folder(self) -> Path:
         folder = Path(self.folder_input.text()).expanduser()
