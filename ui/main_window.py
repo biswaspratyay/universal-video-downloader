@@ -4,6 +4,7 @@ import sys
 from typing import Any
 from urllib.parse import parse_qs, urlparse
 
+from yt_dlp import version as ytdlp_version
 from PySide6.QtCore import QEvent, Qt, QProcess, QThread, QTimer, QUrl
 from PySide6.QtGui import QAction, QColor, QDesktopServices, QIcon, QPalette, QPixmap
 from PySide6.QtWidgets import QApplication, QFormLayout
@@ -39,6 +40,7 @@ from backend.updater import UpdateInfo
 from backend.updater_worker import UpdateCheckWorker, UpdateDownloadWorker
 from backend.version import CURRENT_VERSION
 from backend.worker import AnalyzeWorker, DownloadThread, WorkerThread
+from backend.ytdlp_updater import YtDlpUpdateWorker
 from ui.dialogs.help_dialog import HelpDialog
 from ui.dialogs.update_dialog import UpdateAvailableDialog, UpdateDownloadDialog
 from ui.resources import (
@@ -135,8 +137,16 @@ class MainWindow(QMainWindow):
 
     def _apply_theme_palette(self, theme):
         palette = self.palette()
-        text_color = "#F3F4F6" if theme == "dark" else "#0F172A"
-        accent_color = "#3B82F6" if theme == "dark" else "#2563EB"
+        theme_colors = {
+            "dark": ("#F3F4F6", "#3B82F6"),
+            "emerald": ("#F1F1EA", "#119B6D"),
+            "onyx": ("#F5F1E8", "#D6B46A"),
+            "halloween": ("#FFF1D6", "#E85D24"),
+            "christmas": ("#FFF8E7", "#1E7A4C"),
+            "cyberpunk": ("#F5F3FF", "#00E5FF"),
+            "light": ("#0F172A", "#2563EB"),
+        }
+        text_color, accent_color = theme_colors.get(theme, theme_colors["dark"])
 
         palette.setColor(QPalette.ColorRole.WindowText, QColor(text_color))
         palette.setColor(QPalette.ColorRole.Text, QColor(text_color))
@@ -516,6 +526,8 @@ class MainWindow(QMainWindow):
         self.update_download_worker = None
         self.update_download_dialog = None
         self.update_download_result = None
+        self.ytdlp_update_thread = None
+        self.ytdlp_update_worker = None
 
         self.create_menu()
         self.create_statusbar()
@@ -676,6 +688,11 @@ class MainWindow(QMainWindow):
 
         themes = {
             "Dark": "dark",
+            "Emerald & Gold": "emerald",
+            "Midnight Onyx & Champagne": "onyx",
+            "Halloween": "halloween",
+            "Christmas": "christmas",
+            "Cyberpunk": "cyberpunk",
             "Light": "light",
         }
 
@@ -867,6 +884,75 @@ class MainWindow(QMainWindow):
         self.statusBar().showMessage("Update downloaded and ready for a future installer step.")
 
     # --------------------------------------------------------
+    # yt-dlp updates
+    # --------------------------------------------------------
+
+    def update_ytdlp(self):
+        """Download the current official yt-dlp package without freezing the UI."""
+        if self.ytdlp_update_thread is not None and self.ytdlp_update_thread.isRunning():
+            self.statusBar().showMessage("yt-dlp update is already in progress.")
+            return
+
+        if getattr(self, "download_thread", None) is not None and self.download_thread.isRunning():
+            QMessageBox.information(
+                self,
+                "Download in Progress",
+                "Wait for the current download to finish before updating yt-dlp.",
+            )
+            return
+
+        self.ytdlp_update_button.setEnabled(False)
+        self.ytdlp_update_button.setText("Updating yt-dlp...")
+        self.statusBar().showMessage("Checking for the latest yt-dlp version...")
+
+        worker = YtDlpUpdateWorker()
+        thread = QThread(self)
+        worker.moveToThread(thread)
+        thread.started.connect(worker.run)
+        worker.completed.connect(self._handle_ytdlp_updated)
+        worker.already_current.connect(self._handle_ytdlp_current)
+        worker.error.connect(self._handle_ytdlp_update_error)
+        worker.finished.connect(thread.quit)
+        worker.finished.connect(worker.deleteLater)
+        thread.finished.connect(thread.deleteLater)
+        thread.finished.connect(self._clear_ytdlp_update_references)
+        self.ytdlp_update_thread = thread
+        self.ytdlp_update_worker = worker
+        thread.start()
+
+    def _clear_ytdlp_update_references(self):
+        self.ytdlp_update_thread = None
+        self.ytdlp_update_worker = None
+        if hasattr(self, "ytdlp_update_button"):
+            self.ytdlp_update_button.setEnabled(True)
+            self.ytdlp_update_button.setText("Update yt-dlp")
+
+    def _set_ytdlp_version_label(self, version: str, restart_required: bool = False):
+        label = f"yt-dlp v{version}"
+        if restart_required:
+            label += " (restart to apply)"
+        self.ytdlp_version_label.setText(label)
+
+    def _handle_ytdlp_current(self, version: str):
+        self._set_ytdlp_version_label(version)
+        self.statusBar().showMessage(f"yt-dlp is already up to date ({version}).", 5000)
+        QMessageBox.information(self, "yt-dlp Is Up to Date", f"yt-dlp {version} is already the latest version.")
+
+    def _handle_ytdlp_updated(self, latest_version: str, previous_version: str):
+        self._set_ytdlp_version_label(latest_version, restart_required=True)
+        self.statusBar().showMessage(f"yt-dlp {latest_version} is ready. Restart the app to use it.", 8000)
+        QMessageBox.information(
+            self,
+            "yt-dlp Updated",
+            f"yt-dlp was updated from {previous_version} to {latest_version}.\n\n"
+            "Restart Universal Video Downloader before your next download to use the new version.",
+        )
+
+    def _handle_ytdlp_update_error(self, message: str):
+        self.statusBar().showMessage(message, 8000)
+        QMessageBox.warning(self, "yt-dlp Update Failed", message)
+
+    # --------------------------------------------------------
     # Status Bar
     # --------------------------------------------------------
 
@@ -986,7 +1072,7 @@ class MainWindow(QMainWindow):
 
         self.version_badge.setStyleSheet("""
         QLabel{
-            background:#2563EB;
+            background:palette(highlight);
             color:white;
             border-radius:10px;
             font-weight:700;
@@ -1014,6 +1100,50 @@ class MainWindow(QMainWindow):
 
         header_layout.addLayout(title_layout)
         header_layout.addStretch()
+
+        seasonal_stickers = {
+            "halloween": ASSETS / "images" / "halloween_sticker.svg",
+            "christmas": ASSETS / "images" / "christmas_sticker.svg",
+        }
+        sticker_path = seasonal_stickers.get(self.current_theme)
+        if sticker_path is not None:
+            seasonal_sticker = QLabel()
+            seasonal_sticker.setPixmap(
+                QPixmap(str(sticker_path)).scaled(
+                    68,
+                    68,
+                    Qt.AspectRatioMode.KeepAspectRatio,
+                    Qt.TransformationMode.SmoothTransformation,
+                )
+            )
+            seasonal_sticker.setToolTip(
+                "Halloween theme decoration"
+                if self.current_theme == "halloween"
+                else "Christmas theme decoration"
+            )
+            header_layout.addWidget(seasonal_sticker)
+
+        ytdlp_controls = QVBoxLayout()
+        ytdlp_controls.setSpacing(3)
+
+        self.ytdlp_update_button = QPushButton("Update yt-dlp")
+        self.ytdlp_update_button.setToolTip(
+            "Download the latest yt-dlp release for use after restarting the app."
+        )
+        self.ytdlp_update_button.setStatusTip(
+            "Update yt-dlp to the latest official release."
+        )
+        self.ytdlp_update_button.clicked.connect(self.update_ytdlp)
+        ytdlp_controls.addWidget(self.ytdlp_update_button)
+
+        current_ytdlp_version = getattr(ytdlp_version, "__version__", "unknown")
+        self.ytdlp_version_label = QLabel(f"yt-dlp v{current_ytdlp_version}")
+        self.ytdlp_version_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.ytdlp_version_label.setStyleSheet(
+            "QLabel { background: transparent; border: none; font-size: 11px; }"
+        )
+        ytdlp_controls.addWidget(self.ytdlp_version_label)
+        header_layout.addLayout(ytdlp_controls)
 
         #######################################################
         # PERSONAL NOTE
@@ -1191,6 +1321,7 @@ class MainWindow(QMainWindow):
             for thread in (
                 getattr(self, "worker_thread", None),
                 getattr(self, "download_thread", None),
+                getattr(self, "ytdlp_update_thread", None),
             )
             if thread is not None and thread.isRunning()
         ]

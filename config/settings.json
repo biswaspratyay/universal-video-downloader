@@ -1,5 +1,6 @@
 {
   "download_folder": "D:/Movies",
-  "video_format": "MP4",
-  "audio_format": "Original (Included in video)"
+  "video_format": "WEBM",
+  "audio_format": "Original (Included in video)",
+  "theme": "christmas"
 }

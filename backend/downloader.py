@@ -116,13 +116,22 @@ class DownloadWorker(QObject):
             except FileNotFoundError:
                 continue
 
+    def _quality_label_variants(self) -> set[str]:
+        label = self.quality_label.lower()
+        variants = {
+            re.sub(r"[^a-z0-9]+", "_", label).strip("_"),
+            re.sub(r"[^a-z0-9]+", "-", label).strip("-"),
+            re.sub(r"[^a-z0-9]+", "", label),
+        }
+        return {variant for variant in variants if variant}
+
     def get_partial_paths(self) -> list[Path]:
         output_dir = Path(self.output_folder)
 
         if not output_dir.exists():
             return []
 
-        safe_label = re.sub(r"[^A-Za-z0-9]+", "_", self.quality_label).strip("_").lower()
+        quality_variants = self._quality_label_variants()
         partial_paths: list[Path] = []
 
         for path in output_dir.iterdir():
@@ -132,7 +141,8 @@ class DownloadWorker(QObject):
             if path.suffix.lower() != ".part":
                 continue
 
-            if f"_{safe_label}." in path.name.lower():
+            lower_name = path.name.lower()
+            if any(f"_{variant}." in lower_name for variant in quality_variants):
                 partial_paths.append(path)
 
         return partial_paths

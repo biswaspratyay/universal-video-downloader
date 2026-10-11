@@ -65,7 +65,28 @@ def get_bundled_ffmpeg_dir() -> Path:
     The PyInstaller spec copies only the current platform's FFmpeg
     into the packaged application's ffmpeg directory.
     """
-    return resource_path("ffmpeg")
+    root_dir = resource_path("ffmpeg")
+    candidates: list[Path] = []
+
+    if is_windows():
+        candidates.append(root_dir / "windows")
+    elif is_linux():
+        candidates.append(root_dir / "linux")
+    elif is_macos():
+        candidates.append(root_dir / "macos")
+
+    candidates.append(root_dir)
+
+    for candidate in candidates:
+        if not candidate.exists():
+            continue
+
+        ffmpeg = candidate / executable_name("ffmpeg")
+        ffprobe = candidate / executable_name("ffprobe")
+        if ffmpeg.exists() or ffprobe.exists():
+            return candidate
+
+    return root_dir
 
 
 def get_ffmpeg_executable() -> Path | None:
